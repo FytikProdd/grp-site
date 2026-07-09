@@ -1,47 +1,71 @@
-/* GRP Pong — против бота, средняя сложность, мяч = лого GRP */
+/* GRP Pong — против бота · золотая арена 2026
+   Механика прежняя, визуал прокачан: шлейф мяча, искры, тряска экрана */
 (function () {
-  const canvas = document.getElementById("pongCanvas");
+  var canvas = document.getElementById("pongCanvas");
   if (!canvas) return;
 
-  const ctx = canvas.getContext("2d");
-  const scorePlayerEl = document.getElementById("scorePlayer");
-  const scoreBotEl = document.getElementById("scoreBot");
-  const statusEl = document.getElementById("pongStatus");
-  const startBtn = document.getElementById("pongStart");
-  const resetBtn = document.getElementById("pongReset");
+  var ctx = canvas.getContext("2d");
+  var scorePlayerEl = document.getElementById("scorePlayer");
+  var scoreBotEl = document.getElementById("scoreBot");
+  var statusEl = document.getElementById("pongStatus");
+  var startBtn = document.getElementById("pongStart");
+  var resetBtn = document.getElementById("pongReset");
+  var stage = document.getElementById("pongStage");
 
-  const W = canvas.width;
-  const H = canvas.height;
-  const WIN = 7;
+  var W = canvas.width;
+  var H = canvas.height;
+  var WIN = 7;
 
-  const paddle = { w: 14, h: 90 };
-  const player = { x: 28, y: H / 2 - paddle.h / 2, speed: 0 };
-  const bot = { x: W - 28 - paddle.w, y: H / 2 - paddle.h / 2 };
-  const ball = {
-    x: W / 2,
-    y: H / 2,
-    r: 16,
-    vx: 0,
-    vy: 0,
-    speed: 5.2,
-  };
+  var paddle = { w: 14, h: 90 };
+  var player = { x: 28, y: H / 2 - paddle.h / 2, glow: 0 };
+  var bot = { x: W - 28 - paddle.w, y: H / 2 - paddle.h / 2, glow: 0 };
+  var ball = { x: W / 2, y: H / 2, r: 16, vx: 0, vy: 0, speed: 5.2 };
 
-  let scoreP = 0;
-  let scoreB = 0;
-  let running = false;
-  let raf = null;
-  let targetY = H / 2;
+  var scoreP = 0;
+  var scoreB = 0;
+  var running = false;
+  var raf = null;
+  var targetY = H / 2;
+
+  /* FX state */
+  var trail = [];
+  var particles = [];
+  var flash = 0;
 
   /* medium bot: tracks with lag + slight error */
-  const BOT_SPEED = 4.2;
-  const BOT_REACT = 0.12;
-  const BOT_ERROR = 18;
+  var BOT_SPEED = 4.2;
+  var BOT_REACT = 0.12;
+  var BOT_ERROR = 18;
+
+  function shakeStage() {
+    if (!stage) return;
+    stage.classList.remove("is-shaking");
+    void stage.offsetWidth;
+    stage.classList.add("is-shaking");
+  }
+
+  function burst(x, y, n, spread) {
+    for (var i = 0; i < n; i++) {
+      var a = Math.random() * Math.PI * 2;
+      var s = 1 + Math.random() * (spread || 4);
+      particles.push({
+        x: x, y: y,
+        vx: Math.cos(a) * s,
+        vy: Math.sin(a) * s,
+        life: 1,
+        decay: 0.02 + Math.random() * 0.03,
+        r: 1.5 + Math.random() * 2.5,
+        bright: Math.random() > 0.5,
+      });
+    }
+  }
 
   function resetBall(dir) {
     ball.x = W / 2;
     ball.y = H / 2;
-    const angle = (Math.random() * 0.6 - 0.3) * Math.PI;
-    const d = dir || (Math.random() > 0.5 ? 1 : -1);
+    trail.length = 0;
+    var angle = (Math.random() * 0.6 - 0.3) * Math.PI;
+    var d = dir || (Math.random() > 0.5 ? 1 : -1);
     ball.vx = Math.cos(angle) * ball.speed * d;
     ball.vy = Math.sin(angle) * ball.speed;
   }
@@ -75,6 +99,8 @@
     ball.vy = 0;
     ball.x = W / 2;
     ball.y = H / 2;
+    trail.length = 0;
+    particles.length = 0;
     updateScore();
     draw();
   }
@@ -90,16 +116,15 @@
 
   function update() {
     /* player follows pointer */
-    const desired = targetY - paddle.h / 2;
+    var desired = targetY - paddle.h / 2;
     player.y += (desired - player.y) * 0.35;
     clampPaddle(player);
 
     /* bot medium AI */
-    const aim = ball.y + (Math.random() * 2 - 1) * BOT_ERROR * 0.15;
-    const botCenter = bot.y + paddle.h / 2;
-    const delta = aim - botCenter;
+    var aim = ball.y + (Math.random() * 2 - 1) * BOT_ERROR * 0.15;
+    var botCenter = bot.y + paddle.h / 2;
+    var delta = aim - botCenter;
     bot.y += Math.sign(delta) * Math.min(Math.abs(delta) * BOT_REACT + 0.5, BOT_SPEED);
-    /* slight delay when ball goes away */
     if (ball.vx < 0) {
       bot.y += (H / 2 - paddle.h / 2 - bot.y) * 0.01;
     }
@@ -108,28 +133,57 @@
     ball.x += ball.vx;
     ball.y += ball.vy;
 
+    /* trail */
+    trail.push({ x: ball.x, y: ball.y });
+    if (trail.length > 16) trail.shift();
+
+    /* glow decay */
+    player.glow *= 0.9;
+    bot.glow *= 0.9;
+    flash *= 0.88;
+
     /* walls */
     if (ball.y - ball.r < 0) {
       ball.y = ball.r;
       ball.vy *= -1;
+      burst(ball.x, 4, 8, 3);
     } else if (ball.y + ball.r > H) {
       ball.y = H - ball.r;
       ball.vy *= -1;
+      burst(ball.x, H - 4, 8, 3);
     }
 
     /* paddles */
     if (hitPaddle(player)) {
       ball.x = player.x + paddle.w + ball.r;
       bounceFrom(player);
+      player.glow = 1;
+      burst(ball.x - ball.r, ball.y, 14, 5);
     } else if (hitPaddle(bot)) {
       ball.x = bot.x - ball.r;
       bounceFrom(bot);
+      bot.glow = 1;
+      burst(ball.x + ball.r, ball.y, 14, 5);
+    }
+
+    /* particles */
+    for (var i = particles.length - 1; i >= 0; i--) {
+      var p = particles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vx *= 0.96;
+      p.vy *= 0.96;
+      p.life -= p.decay;
+      if (p.life <= 0) particles.splice(i, 1);
     }
 
     /* score */
     if (ball.x + ball.r < 0) {
       scoreB++;
       updateScore();
+      shakeStage();
+      flash = 1;
+      burst(10, ball.y, 26, 6);
       if (scoreB >= WIN) {
         resetBall(0);
         ball.vx = 0;
@@ -142,6 +196,9 @@
     } else if (ball.x - ball.r > W) {
       scoreP++;
       updateScore();
+      shakeStage();
+      flash = 1;
+      burst(W - 10, ball.y, 26, 6);
       if (scoreP >= WIN) {
         resetBall(0);
         ball.vx = 0;
@@ -164,26 +221,46 @@
   }
 
   function bounceFrom(p) {
-    const rel = (ball.y - (p.y + paddle.h / 2)) / (paddle.h / 2);
-    const angle = rel * 0.7;
-    const dir = p === player ? 1 : -1;
-    const speed = Math.min(9.5, Math.hypot(ball.vx, ball.vy) * 1.05 + 0.15);
+    var rel = (ball.y - (p.y + paddle.h / 2)) / (paddle.h / 2);
+    var angle = rel * 0.7;
+    var dir = p === player ? 1 : -1;
+    var speed = Math.min(9.5, Math.hypot(ball.vx, ball.vy) * 1.05 + 0.15);
     ball.vx = Math.cos(angle) * speed * dir;
     ball.vy = Math.sin(angle) * speed;
   }
 
   function drawCourt() {
-    const g = ctx.createLinearGradient(0, 0, W, H);
-    g.addColorStop(0, "#0a0a0a");
-    g.addColorStop(0.5, "#111008");
-    g.addColorStop(1, "#0a0a0a");
+    var g = ctx.createRadialGradient(W / 2, H / 2, 40, W / 2, H / 2, W * 0.7);
+    g.addColorStop(0, "#151008");
+    g.addColorStop(0.6, "#0c0804");
+    g.addColorStop(1, "#070402");
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, W, H);
 
-    ctx.strokeStyle = "rgba(212,175,55,0.25)";
+    /* score flash */
+    if (flash > 0.02) {
+      ctx.fillStyle = "rgba(212,175,55," + (flash * 0.12).toFixed(3) + ")";
+      ctx.fillRect(0, 0, W, H);
+    }
+
+    /* outer frame */
+    ctx.strokeStyle = "rgba(212,175,55,0.3)";
     ctx.lineWidth = 2;
     ctx.strokeRect(4, 4, W - 8, H - 8);
 
+    /* corner ticks */
+    ctx.strokeStyle = "rgba(246,226,122,0.55)";
+    ctx.lineWidth = 2;
+    var c = 18;
+    [[4, 4, 1, 1], [W - 4, 4, -1, 1], [4, H - 4, 1, -1], [W - 4, H - 4, -1, -1]].forEach(function (k) {
+      ctx.beginPath();
+      ctx.moveTo(k[0] + c * k[2], k[1]);
+      ctx.lineTo(k[0], k[1]);
+      ctx.lineTo(k[0], k[1] + c * k[3]);
+      ctx.stroke();
+    });
+
+    /* center line */
     ctx.setLineDash([8, 12]);
     ctx.beginPath();
     ctx.moveTo(W / 2, 10);
@@ -192,9 +269,15 @@
     ctx.stroke();
     ctx.setLineDash([]);
 
+    /* center circle */
+    ctx.beginPath();
+    ctx.arc(W / 2, H / 2, 58, 0, Math.PI * 2);
+    ctx.strokeStyle = "rgba(212,175,55,0.18)";
+    ctx.stroke();
+
     /* center logo watermark */
     ctx.save();
-    ctx.globalAlpha = 0.06;
+    ctx.globalAlpha = 0.07;
     ctx.fillStyle = "#d4af37";
     ctx.font = "bold 72px Cinzel, serif";
     ctx.textAlign = "center";
@@ -204,15 +287,14 @@
   }
 
   function drawPaddle(p) {
-    const grd = ctx.createLinearGradient(p.x, p.y, p.x + paddle.w, p.y + paddle.h);
+    var grd = ctx.createLinearGradient(p.x, p.y, p.x + paddle.w, p.y + paddle.h);
     grd.addColorStop(0, "#ffe9a0");
     grd.addColorStop(0.5, "#d4af37");
     grd.addColorStop(1, "#8b6914");
     ctx.fillStyle = grd;
+    ctx.shadowColor = "rgba(246,226,122," + (0.5 + p.glow * 0.5).toFixed(2) + ")";
+    ctx.shadowBlur = 12 + p.glow * 26;
     roundRect(p.x, p.y, paddle.w, paddle.h, 6);
-    ctx.fill();
-    ctx.shadowColor = "rgba(212,175,55,0.5)";
-    ctx.shadowBlur = 12;
     ctx.fill();
     ctx.shadowBlur = 0;
   }
@@ -227,27 +309,42 @@
     ctx.closePath();
   }
 
+  function drawTrail() {
+    for (var i = 0; i < trail.length; i++) {
+      var t = trail[i];
+      var k = i / trail.length;
+      ctx.beginPath();
+      ctx.arc(t.x, t.y, ball.r * k * 0.85, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(212,175,55," + (k * 0.16).toFixed(3) + ")";
+      ctx.fill();
+    }
+  }
+
+  function drawParticles() {
+    for (var i = 0; i < particles.length; i++) {
+      var p = particles[i];
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r * p.life, 0, Math.PI * 2);
+      ctx.fillStyle = p.bright
+        ? "rgba(246,226,122," + p.life.toFixed(2) + ")"
+        : "rgba(212,175,55," + (p.life * 0.8).toFixed(2) + ")";
+      ctx.fill();
+    }
+  }
+
   function drawBall() {
-    /* circular GRP logo ball */
     ctx.save();
     ctx.beginPath();
     ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2);
     ctx.closePath();
 
-    const grd = ctx.createRadialGradient(
-      ball.x - 4,
-      ball.y - 4,
-      2,
-      ball.x,
-      ball.y,
-      ball.r
-    );
+    var grd = ctx.createRadialGradient(ball.x - 4, ball.y - 4, 2, ball.x, ball.y, ball.r);
     grd.addColorStop(0, "#fff4c4");
     grd.addColorStop(0.45, "#d4af37");
     grd.addColorStop(1, "#6b5210");
     ctx.fillStyle = grd;
-    ctx.shadowColor = "rgba(212,175,55,0.7)";
-    ctx.shadowBlur = 16;
+    ctx.shadowColor = "rgba(212,175,55,0.8)";
+    ctx.shadowBlur = 18;
     ctx.fill();
     ctx.shadowBlur = 0;
 
@@ -265,6 +362,8 @@
 
   function draw() {
     drawCourt();
+    drawTrail();
+    drawParticles();
     drawPaddle(player);
     drawPaddle(bot);
     drawBall();
@@ -278,28 +377,24 @@
   }
 
   function setTargetFromEvent(e) {
-    const rect = canvas.getBoundingClientRect();
-    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-    const scale = H / rect.height;
+    var rect = canvas.getBoundingClientRect();
+    var clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    var scale = H / rect.height;
     targetY = (clientY - rect.top) * scale;
   }
 
   canvas.addEventListener("mousemove", setTargetFromEvent);
-  canvas.addEventListener(
-    "touchmove",
-    (e) => {
-      e.preventDefault();
-      setTargetFromEvent(e);
-    },
-    { passive: false }
-  );
+  canvas.addEventListener("touchmove", function (e) {
+    e.preventDefault();
+    setTargetFromEvent(e);
+  }, { passive: false });
   canvas.addEventListener("touchstart", setTargetFromEvent, { passive: true });
 
-  startBtn?.addEventListener("click", () => {
+  if (startBtn) startBtn.addEventListener("click", function () {
     if (running) return;
     startGame();
   });
-  resetBtn?.addEventListener("click", fullReset);
+  if (resetBtn) resetBtn.addEventListener("click", fullReset);
 
   fullReset();
 })();

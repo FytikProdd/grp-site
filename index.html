@@ -3,29 +3,55 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GRP — GlebRomanovichProduction</title>
-  <meta name="description" content="GRP — GlebRomanovichProduction. 2026. Империя Глебов Романовичей. 22 подразделения." />
+  <title>GRP — GlebRomanovichProduction · Империя 2026</title>
+  <meta name="description" content="GRP — GlebRomanovichProduction. 2026. Империя Глебов Романовичей. 22 подразделения. Чёрное золото династии." />
+  <meta name="theme-color" content="#060402" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Cinzel+Decorative:wght@700;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body class="custom-cursor">
+
+  <!-- PRELOADER -->
+  <div class="preloader" id="preloader">
+    <div class="preloader-inner">
+      <div class="preloader-crest">
+        <svg viewBox="0 0 100 100" aria-hidden="true">
+          <polygon class="crest-ring" points="50,3 97,50 50,97 3,50" />
+          <polygon class="crest-ring crest-ring--2" points="50,14 86,50 50,86 14,50" />
+        </svg>
+        <span class="preloader-grp">GRP</span>
+      </div>
+      <div class="preloader-bar"><span id="preloaderFill"></span></div>
+      <p class="preloader-label">Империя загружается…</p>
+    </div>
+  </div>
+
+  <!-- CURSOR / FX LAYERS -->
   <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
   <div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
-  <div class="gold-dust" aria-hidden="true"></div>
   <div class="noise" aria-hidden="true"></div>
+  <div class="vignette" aria-hidden="true"></div>
+  <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
 
-  <header class="site-header">
+  <!-- 3D BACKGROUND -->
+  <canvas id="bg3d" aria-hidden="true"></canvas>
+
+  <!-- HEADER -->
+  <header class="site-header" id="siteHeader">
     <div class="header-inner">
-      <a href="#hero" class="logo-mini">GRP</a>
-      <nav class="nav">
+      <a href="#hero" class="logo-mini">
+        <span class="logo-diamond" aria-hidden="true"></span>
+        <span class="logo-text">GRP</span>
+      </a>
+      <nav class="nav" id="mainNav">
         <a href="#hero">Главная</a>
-        <a href="#rulers">Владельцы</a>
-        <a href="#about">О империи</a>
+        <a href="#rulers">Владыки</a>
+        <a href="#about">Империя</a>
         <a href="#branches">Подразделения</a>
-        <a href="#tree">Структура</a>
-        <a href="#pong">Пинг-понг</a>
+        <a href="#tree">Древо</a>
+        <a href="#pong">Арена</a>
         <a href="#contact">Контакты</a>
       </nav>
       <button class="nav-toggle" id="navToggle" aria-label="Меню">
@@ -37,52 +63,57 @@
   <main>
     <!-- HERO -->
     <section id="hero" class="hero">
-      <div class="hero-glow"></div>
-      <div class="hero-orbs" aria-hidden="true">
-        <span></span><span></span><span></span>
-      </div>
-      <div class="hero-content">
-        <p class="hero-eyebrow">2026 · Империя живёт</p>
-        <h1 class="hero-title">
-          <span class="title-grp">GRP</span>
+      <div class="hero-halo" aria-hidden="true"></div>
+      <div class="hero-content" id="heroContent">
+        <p class="hero-eyebrow reveal-up"><span class="eyebrow-line"></span>Anno 2026 · Империя живёт<span class="eyebrow-line"></span></p>
+        <h1 class="hero-title" id="heroTitle" aria-label="GRP">
+          <span class="hero-letter" data-depth="3">G</span><span class="hero-letter" data-depth="5">R</span><span class="hero-letter" data-depth="3">P</span>
         </h1>
-        <p class="hero-subtitle">GlebRomanovichProduction</p>
-        <div class="hero-line"></div>
-        <p class="hero-tagline">
+        <p class="hero-subtitle reveal-up">GlebRomanovich<span>Production</span></p>
+        <div class="hero-line reveal-up" aria-hidden="true"><span class="hero-line-gem"></span></div>
+        <p class="hero-tagline reveal-up">
           Двадцать два звена. Одна кровь. Легенда зародилась в веках —
           и горит в реальности <strong>2026</strong>.
         </p>
-        <div class="hero-actions">
-          <a href="#rulers" class="btn-gold">Встретить владельцев</a>
-          <a href="#branches" class="btn-ghost">Подразделения</a>
+        <div class="hero-actions reveal-up">
+          <a href="#rulers" class="btn-gold magnetic"><span>Встретить владык</span></a>
+          <a href="#branches" class="btn-ghost magnetic"><span>22 подразделения</span></a>
         </div>
       </div>
-      <div class="scroll-hint">
+      <div class="scroll-hint" aria-hidden="true">
         <span>вниз</span>
         <div class="scroll-arrow"></div>
       </div>
     </section>
 
-    <!-- RULERS / GLEBS -->
+    <!-- TICKER -->
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker-track" id="tickerTrack"></div>
+    </div>
+
+    <!-- RULERS -->
     <section id="rulers" class="section rulers">
       <div class="container">
-        <h2 class="section-title">Нынешние владыки GRP</h2>
+        <p class="section-kicker">I · Верховное правление</p>
+        <h2 class="section-title" data-split>Нынешние владыки GRP</h2>
         <div class="section-line"></div>
         <p class="section-lead">
           Те, кто держит империю в 2026 году — не миф, а живые Глебы Романовичи.
         </p>
 
         <div class="rulers-grid">
-          <div class="rulers-photo-wrap">
+          <div class="rulers-photo-wrap tilt" data-tilt-max="8">
             <div class="rulers-frame">
-              <img src="assets/glebs.jpg" alt="Владельцы GRP — Глебы Романовичи" class="rulers-photo" />
-              <div class="rulers-glow"></div>
+              <span class="frame-corner tl"></span><span class="frame-corner tr"></span>
+              <span class="frame-corner bl"></span><span class="frame-corner br"></span>
+              <img src="assets/glebs.jpg" alt="Владыки GRP — Глебы Романовичи" class="rulers-photo" />
+              <div class="rulers-shine" aria-hidden="true"></div>
             </div>
-            <p class="rulers-caption">Поляков Г. Р. · Квятковский Г. Р.</p>
+            <p class="rulers-caption">Поляков Г.&nbsp;Р. · Квятковский Г.&nbsp;Р.</p>
           </div>
 
           <div class="rulers-text">
-            <p class="rulers-badge">Верховное правление · 2026</p>
+            <p class="rulers-badge">⟡ Верховное правление · 2026</p>
             <h3 class="rulers-heading">
               Два Глеба. Одна империя.<br />
               <span>И этого хватает, чтобы мир услышал GRP.</span>
@@ -117,7 +148,8 @@
     <!-- ABOUT -->
     <section id="about" class="section about">
       <div class="container">
-        <h2 class="section-title">О империи</h2>
+        <p class="section-kicker">II · Легенда и реальность</p>
+        <h2 class="section-title" data-split>О империи</h2>
         <div class="section-line"></div>
         <div class="about-grid">
           <div class="about-text">
@@ -137,16 +169,16 @@
             </p>
           </div>
           <div class="about-stats">
-            <div class="stat">
-              <span class="stat-num">22</span>
+            <div class="stat tilt" data-tilt-max="10">
+              <span class="stat-num" data-count="22">0</span>
               <span class="stat-label">подразделения</span>
             </div>
-            <div class="stat">
-              <span class="stat-num">2026</span>
+            <div class="stat tilt" data-tilt-max="10">
+              <span class="stat-num" data-count="2026">0</span>
               <span class="stat-label">год правления</span>
             </div>
-            <div class="stat">
-              <span class="stat-num">2</span>
+            <div class="stat tilt" data-tilt-max="10">
+              <span class="stat-num" data-count="2">0</span>
               <span class="stat-label">владыки империи</span>
             </div>
           </div>
@@ -157,7 +189,8 @@
     <!-- BRANCHES -->
     <section id="branches" class="section branches">
       <div class="container">
-        <h2 class="section-title">Подразделения GRP</h2>
+        <p class="section-kicker">III · Звенья династии</p>
+        <h2 class="section-title" data-split>Подразделения GRP</h2>
         <div class="section-line"></div>
         <p class="section-lead">
           Нажмите карточку — узнаете зарождение и то, чем ветвь живёт в 2026.
@@ -169,15 +202,15 @@
     <!-- TREE -->
     <section id="tree" class="section tree-section">
       <div class="container">
-        <h2 class="section-title">Древо империи</h2>
+        <p class="section-kicker">IV · Карта власти</p>
+        <h2 class="section-title" data-split>Древо империи</h2>
         <div class="section-line"></div>
-        <p class="section-lead">Классическая карта звеньев GRP в золотом свитке.</p>
-        <div class="tree-frame">
-          <img
-            src="assets/grp-tree.jpg"
-            alt="Структура GRP — GlebRomanovichProduction"
-            class="tree-image"
-          />
+        <p class="section-lead">Классическая карта звеньев GRP в золотом свитке. Нажмите, чтобы рассмотреть.</p>
+        <div class="tree-frame tilt" data-tilt-max="4" id="treeFrame" role="button" tabindex="0" aria-label="Открыть карту структуры GRP">
+          <span class="frame-corner tl"></span><span class="frame-corner tr"></span>
+          <span class="frame-corner bl"></span><span class="frame-corner br"></span>
+          <img src="assets/grp-tree.jpg" alt="Структура GRP — GlebRomanovichProduction" class="tree-image" />
+          <div class="tree-zoom-hint" aria-hidden="true">⌕</div>
         </div>
       </div>
     </section>
@@ -185,7 +218,8 @@
     <!-- PONG -->
     <section id="pong" class="section pong-section">
       <div class="container">
-        <h2 class="section-title">Арена GRP</h2>
+        <p class="section-kicker">V · Золотая арена</p>
+        <h2 class="section-title" data-split>Арена GRP</h2>
         <div class="section-line"></div>
         <p class="section-lead">
           Пинг-понг против бота · средняя сложность · шарик — логотип GRP
@@ -202,10 +236,12 @@
               <strong id="scoreBot">0</strong>
             </div>
           </div>
-          <canvas id="pongCanvas" width="800" height="450" aria-label="Пинг-понг GRP"></canvas>
+          <div class="pong-stage" id="pongStage">
+            <canvas id="pongCanvas" width="800" height="450" aria-label="Пинг-понг GRP"></canvas>
+          </div>
           <div class="pong-controls">
-            <button type="button" class="btn-gold" id="pongStart">Старт</button>
-            <button type="button" class="btn-ghost" id="pongReset">Сброс</button>
+            <button type="button" class="btn-gold magnetic" id="pongStart"><span>Старт</span></button>
+            <button type="button" class="btn-ghost magnetic" id="pongReset"><span>Сброс</span></button>
             <p class="pong-hint">Мышь / касание — ракетка слева · до 7 очков</p>
           </div>
         </div>
@@ -215,18 +251,21 @@
     <!-- CONTACT -->
     <section id="contact" class="section contact">
       <div class="container">
-        <h2 class="section-title">Контакты империи</h2>
+        <p class="section-kicker">VI · Прямая линия</p>
+        <h2 class="section-title" data-split>Контакты империи</h2>
         <div class="section-line"></div>
-        <div class="contact-card">
+        <div class="contact-card tilt" data-tilt-max="5">
+          <span class="frame-corner tl"></span><span class="frame-corner tr"></span>
+          <span class="frame-corner bl"></span><span class="frame-corner br"></span>
           <p class="contact-brand">GRP</p>
           <p class="contact-full">GlebRomanovichProduction · 2026</p>
-          <p class="contact-text">Связь напрямую с владельцами:</p>
+          <p class="contact-text">Связь напрямую с владыками:</p>
           <div class="contact-list">
-            <a class="contact-item" href="tel:+375447551716">
+            <a class="contact-item magnetic" href="tel:+375447551716">
               <span class="contact-phone">8 044 755-17-16</span>
               <span class="contact-name">Поляков Глеб Романович</span>
             </a>
-            <a class="contact-item" href="tel:+375255195552">
+            <a class="contact-item magnetic" href="tel:+375255195552">
               <span class="contact-phone">8 025 519-55-52</span>
               <span class="contact-name">Квятковский Глеб Романович</span>
             </a>
@@ -237,14 +276,16 @@
   </main>
 
   <footer class="site-footer">
+    <div class="footer-crest" aria-hidden="true">⟡</div>
     <p>© <span id="year"></span> GRP — GlebRomanovichProduction. Золото династии. 2026.</p>
-    <p class="site-credit">Создано lilgleb x fytikprod</p>
   </footer>
 
-  <!-- MODAL -->
+  <!-- BRANCH MODAL -->
   <div class="modal" id="branchModal" role="dialog" aria-modal="true" aria-hidden="true">
     <div class="modal-backdrop" data-close></div>
     <div class="modal-panel">
+      <span class="frame-corner tl"></span><span class="frame-corner tr"></span>
+      <span class="frame-corner bl"></span><span class="frame-corner br"></span>
       <button class="modal-close" data-close aria-label="Закрыть">×</button>
       <div class="modal-media" id="modalMedia"></div>
       <h3 class="modal-abbr" id="modalAbbr"></h3>
@@ -253,8 +294,17 @@
     </div>
   </div>
 
+  <!-- TREE LIGHTBOX -->
+  <div class="lightbox" id="treeLightbox" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="lightbox-backdrop" data-lb-close></div>
+    <button class="modal-close lightbox-close" data-lb-close aria-label="Закрыть">×</button>
+    <img src="assets/grp-tree.jpg" alt="Структура GRP крупно" class="lightbox-img" />
+  </div>
+
+  <script src="js/vendor/three.min.js"></script>
   <script src="js/icons.js"></script>
   <script src="js/data.js"></script>
+  <script src="js/bg3d.js"></script>
   <script src="js/main.js"></script>
   <script src="js/pong.js"></script>
 </body>
