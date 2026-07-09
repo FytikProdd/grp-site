@@ -171,4 +171,24 @@ const ICONS = {
       <circle cx="52" cy="28" r="6" stroke="currentColor" stroke-width="1.5" fill="none"/>
       <path d="M52 24v8M49 28h6" stroke="currentColor" stroke-width="1.2"/>
     </svg>`,
+  gas: `
+    <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M32 6 L52 14 V34 C52 48 40 56 32 58 C24 56 12 48 12 34 V14 Z" stroke="currentColor" stroke-width="2" fill="currentColor" fill-opacity="0.12"/>
+      <circle cx="32" cy="14" r="3" fill="currentColor"/>
+      <circle cx="26" cy="18" r="2" fill="currentColor" fill-opacity="0.7"/>
+      <circle cx="38" cy="18" r="2" fill="currentColor" fill-opacity="0.7"/>
+      <path d="M20 28 h24 v10 a8 8 0 0 1 -24 0 Z" stroke="currentColor" stroke-width="2" fill="currentColor" fill-opacity="0.25"/>
+      <ellipse cx="32" cy="32" rx="10" ry="5" stroke="currentColor" stroke-width="1.5" fill="none"/>
+      <circle cx="22" cy="40" r="5" stroke="currentColor" stroke-width="1.5" fill="currentColor" fill-opacity="0.3"/>
+      <circle cx="42" cy="40" r="5" stroke="currentColor" stroke-width="1.5" fill="currentColor" fill-opacity="0.3"/>
+    </svg>`,
+  assault: `
+    <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M32 6 L52 14 V34 C52 48 40 56 32 58 C24 56 12 48 12 34 V14 Z" stroke="currentColor" stroke-width="2" fill="currentColor" fill-opacity="0.12"/>
+      <path d="M18 28 C22 18 28 16 32 14 C36 16 42 18 46 28 C40 26 36 30 32 34 C28 30 24 26 18 28 Z" fill="currentColor" fill-opacity="0.35"/>
+      <circle cx="32" cy="26" r="6" fill="currentColor" fill-opacity="0.85"/>
+      <path d="M22 34 h20 v10 l-4 8 h-12 l-4 -8 Z" fill="currentColor" fill-opacity="0.7"/>
+      <path d="M26 40 h18 l4 2 -2 2 h-20" stroke="currentColor" stroke-width="1.5" fill="none"/>
+      <path d="M32 8 l0 6 M30 10 l4 0" stroke="currentColor" stroke-width="1.5"/>
+    </svg>`,
 };
