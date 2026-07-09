@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GRP — GlebRomanovichProduction</title>
+  <meta name="description" content="GRP — GlebRomanovichProduction. Империя Глебов Романовичей. 20 легендарных подразделений." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="gold-dust" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="#hero" class="logo-mini">GRP</a>
+      <nav class="nav">
+        <a href="#hero">Главная</a>
+        <a href="#about">О империи</a>
+        <a href="#branches">Подразделения</a>
+        <a href="#tree">Структура</a>
+        <a href="#contact">Контакты</a>
+      </nav>
+      <button class="nav-toggle" id="navToggle" aria-label="Меню">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section id="hero" class="hero">
+      <div class="hero-glow"></div>
+      <div class="hero-content">
+        <p class="hero-eyebrow">Империя, рождённая в веках</p>
+        <h1 class="hero-title">
+          <span class="title-grp">GRP</span>
+        </h1>
+        <p class="hero-subtitle">GlebRomanovichProduction</p>
+        <div class="hero-line"></div>
+        <p class="hero-tagline">
+          Двадцать ветвей. Одна кровь. Золото и сталь династии Глебов Романовичей.
+        </p>
+        <a href="#branches" class="btn-gold">Открыть подразделения</a>
+      </div>
+      <div class="scroll-hint">
+        <span>вниз</span>
+        <div class="scroll-arrow"></div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about" class="section about">
+      <div class="container">
+        <h2 class="section-title">О империи</h2>
+        <div class="section-line"></div>
+        <div class="about-grid">
+          <div class="about-text">
+            <p>
+              В незапамятные времена, когда звёзды ещё помнили имена первых мастеров,
+              родилась легенда о <strong>Глебе Романовиче</strong> — человеке, чьё имя
+              стало клятвой, гербом и обещанием качества.
+            </p>
+            <p>
+              Из одного рода выросли двадцать империй: разведка и двери, консалтинг и
+              металл, дороги и искусство, наука и лес. Каждое подразделение несёт в себе
+              частицу первозданного замысла — <em>GlebRomanovichProduction</em>.
+            </p>
+            <p>
+              Сегодня <strong>GRP</strong> — это не просто аббревиатура. Это кодекс:
+              чёрный фон истории и золото свершений. Добро пожаловать в империю.
+            </p>
+          </div>
+          <div class="about-stats">
+            <div class="stat">
+              <span class="stat-num">20</span>
+              <span class="stat-label">подразделений</span>
+            </div>
+            <div class="stat">
+              <span class="stat-num">∞</span>
+              <span class="stat-label">лет легенды</span>
+            </div>
+            <div class="stat">
+              <span class="stat-num">1</span>
+              <span class="stat-label">имперский кодекс</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BRANCHES -->
+    <section id="branches" class="section branches">
+      <div class="container">
+        <h2 class="section-title">Подразделения GRP</h2>
+        <div class="section-line"></div>
+        <p class="section-lead">
+          Каждая ветвь — отдельная династия. Нажмите на карточку, чтобы узнать историю создания.
+        </p>
+        <div class="branches-grid" id="branchesGrid">
+          <!-- cards injected by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- TREE / ORIGINAL IMAGE -->
+    <section id="tree" class="section tree-section">
+      <div class="container">
+        <h2 class="section-title">Древо империи</h2>
+        <div class="section-line"></div>
+        <p class="section-lead">
+          Полная карта всех звеньев GRP — так, как она запечатлена в золотом свитке.
+        </p>
+        <div class="tree-frame">
+          <img
+            src="assets/grp-tree.jpg"
+            alt="Структура GRP — GlebRomanovichProduction: все подразделения"
+            class="tree-image"
+          />
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="section contact">
+      <div class="container">
+        <h2 class="section-title">Связь с империей</h2>
+        <div class="section-line"></div>
+        <div class="contact-card">
+          <p class="contact-brand">GRP</p>
+          <p class="contact-full">GlebRomanovichProduction</p>
+          <p class="contact-text">
+            Для предложений, союзов и легендарных начинаний — пишите в золотую книгу.
+          </p>
+          <a class="btn-gold" href="mailto:contact@grp.empire">contact@grp.empire</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>© <span id="year"></span> GRP — GlebRomanovichProduction. Золото династии.</p>
+  </footer>
+
+  <!-- MODAL -->
+  <div class="modal" id="branchModal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-panel">
+      <button class="modal-close" data-close aria-label="Закрыть">×</button>
+      <div class="modal-icon" id="modalIcon"></div>
+      <h3 class="modal-abbr" id="modalAbbr"></h3>
+      <p class="modal-full" id="modalFull"></p>
+      <div class="modal-story" id="modalStory"></div>
+    </div>
+  </div>
+
+  <script src="js/icons.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
