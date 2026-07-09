@@ -2,28 +2,36 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>GRP — GlebRomanovichProduction</title>
   <meta name="description" content="GRP — GlebRomanovichProduction. Империя Глебов Романовичей. 20 легендарных подразделений." />
+  <meta name="theme-color" content="#050505" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23050505'/%3E%3Ctext x='32' y='44' text-anchor='middle' font-family='Georgia,serif' font-weight='700' font-size='34' fill='%23d4af37'%3EG%3C/text%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
+  <!-- Фоновые эффекты -->
+  <div class="progress-bar" id="progressBar" aria-hidden="true"></div>
+  <canvas id="fxCanvas" aria-hidden="true"></canvas>
   <div class="gold-dust" aria-hidden="true"></div>
+  <div class="orb orb-1" aria-hidden="true"></div>
+  <div class="orb orb-2" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
 
   <header class="site-header">
     <div class="header-inner">
-      <a href="#hero" class="logo-mini">GRP</a>
-      <nav class="nav">
+      <a href="#hero" class="logo-mini" data-magnetic>GRP</a>
+      <nav class="nav" id="siteNav">
         <a href="#hero">Главная</a>
         <a href="#about">О империи</a>
         <a href="#branches">Подразделения</a>
         <a href="#tree">Структура</a>
         <a href="#contact">Контакты</a>
       </nav>
-      <button class="nav-toggle" id="navToggle" aria-label="Меню">
+      <button class="nav-toggle" id="navToggle" aria-label="Меню" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
     </div>
@@ -32,9 +40,12 @@
   <main>
     <!-- HERO -->
     <section id="hero" class="hero">
-      <div class="hero-glow"></div>
+      <div class="hero-glow" aria-hidden="true"></div>
+      <div class="hero-rings" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </div>
       <div class="hero-content">
-        <p class="hero-eyebrow">Империя, рождённая в веках</p>
+        <p class="hero-eyebrow"><span class="eyebrow-line"></span>Империя, рождённая в веках<span class="eyebrow-line"></span></p>
         <h1 class="hero-title">
           <span class="title-grp">GRP</span>
         </h1>
@@ -43,17 +54,23 @@
         <p class="hero-tagline">
           Двадцать ветвей. Одна кровь. Золото и сталь династии Глебов Романовичей.
         </p>
-        <a href="#branches" class="btn-gold">Открыть подразделения</a>
+        <a href="#branches" class="btn-gold" data-magnetic><span>Открыть подразделения</span></a>
       </div>
-      <div class="scroll-hint">
+      <div class="scroll-hint" aria-hidden="true">
         <span>вниз</span>
         <div class="scroll-arrow"></div>
       </div>
     </section>
 
+    <!-- MARQUEE -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee-track"></div>
+    </div>
+
     <!-- ABOUT -->
     <section id="about" class="section about">
       <div class="container">
+        <p class="section-kicker">Кодекс рода</p>
         <h2 class="section-title">О империи</h2>
         <div class="section-line"></div>
         <div class="about-grid">
@@ -75,7 +92,7 @@
           </div>
           <div class="about-stats">
             <div class="stat">
-              <span class="stat-num">20</span>
+              <span class="stat-num" data-count="20">0</span>
               <span class="stat-label">подразделений</span>
             </div>
             <div class="stat">
@@ -83,7 +100,7 @@
               <span class="stat-label">лет легенды</span>
             </div>
             <div class="stat">
-              <span class="stat-num">1</span>
+              <span class="stat-num" data-count="1">0</span>
               <span class="stat-label">имперский кодекс</span>
             </div>
           </div>
@@ -94,6 +111,7 @@
     <!-- BRANCHES -->
     <section id="branches" class="section branches">
       <div class="container">
+        <p class="section-kicker">Двадцать ветвей</p>
         <h2 class="section-title">Подразделения GRP</h2>
         <div class="section-line"></div>
         <p class="section-lead">
@@ -105,9 +123,15 @@
       </div>
     </section>
 
+    <!-- MARQUEE -->
+    <div class="marquee marquee-reverse" aria-hidden="true">
+      <div class="marquee-track"></div>
+    </div>
+
     <!-- TREE / ORIGINAL IMAGE -->
     <section id="tree" class="section tree-section">
       <div class="container">
+        <p class="section-kicker">Золотой свиток</p>
         <h2 class="section-title">Древо империи</h2>
         <div class="section-line"></div>
         <p class="section-lead">
@@ -118,23 +142,28 @@
             src="assets/grp-tree.jpg"
             alt="Структура GRP — GlebRomanovichProduction: все подразделения"
             class="tree-image"
+            id="treeImage"
+            loading="lazy"
           />
         </div>
+        <div class="tree-fallback" id="treeFallback" hidden></div>
       </div>
     </section>
 
     <!-- CONTACT -->
     <section id="contact" class="section contact">
       <div class="container">
+        <p class="section-kicker">Золотая книга</p>
         <h2 class="section-title">Связь с империей</h2>
         <div class="section-line"></div>
         <div class="contact-card">
+          <div class="contact-card-glow" aria-hidden="true"></div>
           <p class="contact-brand">GRP</p>
           <p class="contact-full">GlebRomanovichProduction</p>
           <p class="contact-text">
             Для предложений, союзов и легендарных начинаний — пишите в золотую книгу.
           </p>
-          <a class="btn-gold" href="mailto:contact@grp.empire">contact@grp.empire</a>
+          <a class="btn-gold" href="mailto:contact@grp.empire" data-magnetic><span>contact@grp.empire</span></a>
         </div>
       </div>
     </section>
@@ -155,6 +184,15 @@
       <div class="modal-story" id="modalStory"></div>
     </div>
   </div>
+
+  <!-- BACK TO TOP -->
+  <button class="to-top" id="toTop" aria-label="Наверх">
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+
+  <!-- CUSTOM CURSOR -->
+  <div class="cursor-dot" aria-hidden="true"></div>
+  <div class="cursor-ring" aria-hidden="true"></div>
 
   <script src="js/icons.js"></script>
   <script src="js/data.js"></script>
